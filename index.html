@@ -613,7 +613,7 @@ function vistaSicurezza(){
       '<div class="azioni"><button class="pulsante primario" data-azione="esporta-backup">Esporta backup cifrato</button>' + inputFile('Ripristina da backup') + '</div></section>' +
     '<section class="pannello"><h3>Condivisione con i familiari</h3><p>Crea una pagina unica e cifrata da pubblicare nel tuo spazio online. I familiari autorizzati la aprono dal link, senza account, con il proprio nome e la password personale che comunichi loro di persona.</p>' +
       '<div class="azioni"><button class="pulsante primario" data-azione="vai" data-vista="famiglia">Crea archivio per i familiari</button></div>' +
-      (archivi ? '<p style="margin-top:14px">Archivi generati. Quelli ancora online restano leggibili con la loro password: rimuovili quando pubblichi una versione nuova.</p><ul class="archivi">' + archivi + '</ul>' : '') + '</section>' +
+      (archivi ? '<p style="margin-top:14px">Aggiornamenti generati. Ogni nuovo famiglia.html caricato su GitHub sostituisce il precedente allo stesso link; le versioni vecchie restano però nella cronologia del repository.</p><ul class="archivi">' + archivi + '</ul>' : '') + '</section>' +
     '<section class="pannello"><h3>🔏 Sigillo per le ultime volontà</h3><p>Le schede sigillate restano chiuse nell\'archivio dei familiari: per aprirle serve un numero minimo di parti della chiave, ciascuna affidata a un custode diverso.</p>' +
       '<p><strong>Stato:</strong> ' + (d.sigillo ? 'attivo, servono ' + d.sigillo.k + ' parti su ' + d.sigillo.n : 'non ancora creato') + ' · ' + d.schede.filter(s => s.sigillata).length + ' schede sigillate</p>' +
       '<div class="azioni"><button class="pulsante" data-azione="vai" data-vista="sigillo">' + (d.sigillo ? 'Gestisci il sigillo' : 'Crea il sigillo') + '</button></div></section>' +
@@ -643,18 +643,19 @@ function rigaPersona(p){
   return '<div class="persona"><div class="persona-nomi">' +
     '<label class="etichetta">Nome<input data-p="nome" value="' + esc(p.nome || '') + '" ' + a + '></label>' +
     '<label class="etichetta">Cognome<input data-p="cognome" value="' + esc(p.cognome || '') + '" ' + a + '></label></div>' +
-    '<label class="etichetta">Password personale (almeno 12 caratteri)<input data-p="pw" type="text" class="campo-pw" ' + a + ' autocapitalize="off"></label>' +
+    '<label class="etichetta">Password personale (almeno 12 caratteri)<input data-p="pw" type="text" class="campo-pw" value="' + esc(p.pw || '') + '" ' + a + ' autocapitalize="off"></label>' +
     '<div class="riga-strumenti"><button type="button" class="pulsante piccolo" data-azione="genera-pw-persona">Genera password</button>' +
     '<button type="button" class="collegamento rosso" data-azione="rimuovi-persona">Rimuovi</button></div></div>';
 }
 function vistaFamiglia(){
-  const prec = (S.dati.archiviFamiliari.find(a => a.persone && a.persone.length) || {}).persone || [{}];
+  const prec = (S.dati.familiari && S.dati.familiari.length) ? S.dati.familiari
+    : ((S.dati.archiviFamiliari.find(a => a.persone && a.persone.length) || {}).persone || [{}]);
   const opzioni = SEZIONI.map(sez => {
     const n = S.dati.schede.filter(s => s.sezione === sez.id).length;
     return '<label class="spunta"><input type="checkbox" name="sez" value="' + sez.id + '"' + (n ? ' checked' : ' disabled') + '> ' + sez.icona + ' ' + sez.nome + ' <span style="color:var(--tenue)">(' + n + ')</span></label>';
   }).join('');
   return '<button class="indietro" data-azione="sicurezza">‹ Backup e sicurezza</button><div class="vista-testa"><h2>Archivio per i familiari</h2></div>' +
-    '<form class="modulo" data-form="famiglia"><p style="margin:0;color:var(--tenue)">Un solo link per tutti. Ogni familiare autorizzato entra con il proprio nome e la password personale che gli comunichi tu. L\'app ricorda i nomi, mai le password.</p>' +
+    '<form class="modulo" data-form="famiglia"><p style="margin:0;color:var(--tenue)">Un solo link per tutti. Ogni familiare autorizzato entra con il proprio nome e la password personale che gli comunichi tu. L\'app ricorda nomi e password per i prossimi aggiornamenti, dentro il tuo archivio cifrato.</p>' +
     '<fieldset style="border:0;padding:0;margin:0;display:grid;gap:10px"><legend class="etichetta" style="margin-bottom:8px">Sezioni da includere</legend>' + opzioni + '</fieldset>' +
     '<label class="etichetta">Messaggio di apertura (facoltativo, visibile solo dopo lo sblocco)<textarea name="messaggio" placeholder="Qualche parola per chi aprirà l\'archivio"></textarea></label>' +
     '<div><div class="etichetta" style="margin-bottom:8px">Familiari autorizzati</div><div id="persone" style="display:grid;gap:12px">' + prec.map(rigaPersona).join('') + '</div>' +
@@ -666,7 +667,7 @@ function vistaFamigliaFatto(){
     '<p style="margin:0">Hai scaricato <strong style="font-family:var(--mono);font-size:.9rem;word-break:break-all">' + esc(S.vista.nome) + '</strong>.</p>' +
     '<p style="margin:0"><strong>Familiari autorizzati:</strong> ' + esc((S.vista.persone || []).map(p => (p.nome + ' ' + p.cognome).trim()).join(', ')) + '</p>' +
     (S.vista.sigillate ? '<p style="margin:0">🔏 ' + S.vista.sigillate + (S.vista.sigillate === 1 ? ' scheda sigillata: si apre' : ' schede sigillate: si aprono') + ' solo con ' + S.dati.sigillo.k + ' parti su ' + S.dati.sigillo.n + ' della chiave del sigillo.</p>' : '') +
-    '<ol class="passi"><li>Carica il file nel tuo spazio online, ad esempio GitHub Pages o Netlify.</li><li>Invia lo stesso link a tutti i familiari autorizzati.</li><li>Comunica a ciascuno la sua password a voce o di persona, mai nello stesso messaggio del link. Per entrare servono il nome, scritto come l\'hai inserito, e la password; maiuscole e accenti del nome non contano.</li><li>Rimuovi dallo spazio online gli archivi precedenti: restano leggibili con la loro vecchia password.</li></ol>' +
+    '<ol class="passi"><li>Su GitHub, nel repository dell\'app, tocca «Add file», poi «Upload files», scegli famiglia.html dai Download e conferma con «Commit changes». Il nuovo file sostituisce il precedente.</li><li>Dopo un paio di minuti la pagina aggiornata è online allo stesso link di sempre: non serve rimandarlo.</li><li>Se è la prima volta, o hai aggiunto un familiare, invia il link e comunica la password di persona, mai nello stesso messaggio. Per entrare servono il nome, scritto come l\'hai inserito, e la password; maiuscole e accenti del nome non contano.</li></ol>' +
     '<div class="azioni"><button class="pulsante primario" data-azione="sicurezza">Torna a Backup e sicurezza</button></div></div>';
 }
 function campiCustodi(n, nomi){
@@ -1052,9 +1053,10 @@ document.addEventListener('submit', async e => {
         dek.fill(0);
         const html = SORGENTE.replace(/(<script id="archivio-incorporato" type="application\/json">)[\s\S]*?(<\/script>)/, (m, x, y) => x + JSON.stringify(arch) + y);
         if (html === SORGENTE) return mostraErrore(f, 'Non è stato possibile generare la pagina.');
-        const nome = 'filo-di-casa-famiglia-' + oggiFile() + '.html';
+        const nome = 'famiglia.html';
         scarica(nome, html, 'text/html');
         const elenco = persone.map(p => ({nome:p.nome, cognome:p.cognome}));
+        S.dati.familiari = persone.map(p => ({nome:p.nome, cognome:p.cognome, pw:p.pw}));
         S.dati.archiviFamiliari.unshift({nome, creato:t, schede:incluse.length, sigillate:sigillate.length, sezioni, persone:elenco});
         await salva();
         vai({tipo:'famigliaFatto', nome, persone:elenco, sigillate:sigillate.length});
