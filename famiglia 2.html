@@ -1,0 +1,1074 @@
+<!doctype html>
+<html lang="it"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Filo di Casa">
+<meta name="theme-color" content="#2f5d5a">
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Il Filo di Casa</title>
+<style>
+:root{
+  color-scheme: light dark;
+  --sfondo:#f5efe4; --carta:#fffdf9; --carta-2:#f6efe2; --inchiostro:#2b2723; --tenue:#6f665b;
+  --linea:#e4d9c6; --accento:#2f5d5a; --su-accento:#ffffff; --filo:#b4533c; --pericolo:#a3362a;
+  --presto-fondo:#fbeed3; --presto:#8a5a0c; --scaduto-fondo:#f8dcd6;
+  --ombra:0 1px 2px rgba(60,40,20,.06),0 6px 18px rgba(60,40,20,.06);
+  --raggio:14px;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --sfondo:#1a1917; --carta:#242220; --carta-2:#2d2a27; --inchiostro:#efe8dc; --tenue:#aaa093;
+    --linea:#3a3631; --accento:#7ab3ad; --su-accento:#0f1f1e; --filo:#de8064; --pericolo:#ec8b7e;
+    --presto-fondo:#3d3020; --presto:#f0c070; --scaduto-fondo:#432622;
+    --ombra:0 1px 2px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --sfondo:#1a1917; --carta:#242220; --carta-2:#2d2a27; --inchiostro:#efe8dc; --tenue:#aaa093;
+  --linea:#3a3631; --accento:#7ab3ad; --su-accento:#0f1f1e; --filo:#de8064; --pericolo:#ec8b7e;
+  --presto-fondo:#3d3020; --presto:#f0c070; --scaduto-fondo:#432622;
+  --ombra:0 1px 2px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--sfondo);color:var(--inchiostro);font:16px/1.5 var(--sans);min-height:100vh;-webkit-tap-highlight-color:transparent}
+#app{max-width:900px;margin:0 auto;padding:max(12px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) calc(40px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.2;margin:0 0 .4em}
+h1{font-size:1.8rem} h2{font-size:1.45rem} h3{font-size:1.12rem}
+p{margin:0 0 .8em}
+button,input,textarea{font:inherit;color:inherit}
+a{color:var(--accento)}
+.nascosto{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none}
+.logo-l1{stroke:var(--accento)} .logo-l2{stroke:var(--filo)}
+
+.pulsante{display:inline-flex;align-items:center;justify-content:center;gap:.45em;min-height:44px;padding:.55em 1.15em;border-radius:999px;border:1px solid var(--linea);background:var(--carta);cursor:pointer;font-weight:500;text-decoration:none;text-align:center;position:relative}
+.pulsante.primario{background:var(--accento);border-color:var(--accento);color:var(--su-accento)}
+.pulsante.pericolo{color:var(--pericolo);border-color:var(--pericolo);background:transparent}
+.pulsante.pericolo-pieno{background:var(--pericolo);border-color:var(--pericolo);color:#fff}
+.pulsante.piccolo{min-height:36px;padding:.3em .95em;font-size:.92rem}
+.pulsante:disabled{opacity:.55;cursor:default}
+.pulsante svg{width:1em;height:1em}
+:focus-visible{outline:2px solid var(--accento);outline-offset:2px}
+.collegamento{background:none;border:0;color:var(--accento);text-decoration:underline;text-underline-offset:3px;padding:.4em 0;cursor:pointer;font-size:.95rem}
+.collegamento.rosso{color:var(--pericolo)}
+
+.testata{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0 12px}
+.marchio{display:flex;align-items:center;gap:10px;background:none;border:0;padding:4px 0;cursor:pointer;font-family:var(--serif);font-size:1.3rem;font-weight:600}
+.marchio svg{width:32px;height:32px}
+.fascia{background:var(--carta-2);border:1px solid var(--linea);border-radius:10px;padding:.45em .9em;font-size:.88rem;color:var(--tenue);margin-bottom:10px}
+.cerca input{width:100%;min-height:46px;padding:.6em 1em .6em 2.5em;border-radius:12px;border:1px solid var(--linea);background:var(--carta) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a8076' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") no-repeat .85em center/1.1em;font-size:16px;-webkit-appearance:none;appearance:none}
+.cerca input:focus{outline:2px solid var(--accento);border-color:transparent}
+
+.griglia{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:16px}
+.carta-sezione{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"e n" "e d" "e c";column-gap:14px;text-align:left;padding:16px;border-radius:var(--raggio);border:1px solid var(--linea);background:var(--carta);box-shadow:var(--ombra);cursor:pointer;align-content:start}
+.carta-sezione:active{transform:scale(.99)}
+.carta-sezione .emoji{grid-area:e;font-size:1.7rem;line-height:1;width:50px;height:50px;display:grid;place-items:center;background:var(--carta-2);border-radius:12px}
+.carta-sezione .nome{grid-area:n;font-weight:600;font-family:var(--serif);font-size:1.1rem}
+.carta-sezione .descr{grid-area:d;color:var(--tenue);font-size:.88rem;line-height:1.35}
+.carta-sezione .conteggio{grid-area:c;font-size:.82rem;color:var(--accento);margin-top:6px;font-weight:600}
+.carta-sezione.sicurezza{border-style:dashed;background:transparent;box-shadow:none}
+
+.blocco{margin-top:18px}
+.blocco > h2{font-size:1.15rem;margin-bottom:8px}
+.elenco{background:var(--carta);border:1px solid var(--linea);border-radius:var(--raggio);overflow:hidden;box-shadow:var(--ombra)}
+.riga{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:13px 16px;background:none;border:0;border-bottom:1px solid var(--linea);cursor:pointer;min-height:58px}
+.riga:last-child{border-bottom:0}
+.riga-testo{flex:1;min-width:0;display:flex;flex-direction:column}
+.riga-testo strong{font-weight:600}
+.riga-testo small{color:var(--tenue);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.88rem}
+.riga .icona-sez{font-size:1.2rem}
+.freccia{color:var(--tenue);font-size:1.4rem;line-height:1}
+.badge{font-size:.75rem;font-weight:600;padding:.2em .65em;border-radius:999px;background:var(--presto-fondo);color:var(--presto);white-space:nowrap}
+.badge.scaduto{background:var(--scaduto-fondo);color:var(--pericolo)}
+.badge.sig{background:var(--carta-2);color:var(--filo);border:1px solid var(--linea)}
+.pannello.sigillo{border-color:var(--filo)}
+.codice-parte{font-size:1rem;letter-spacing:.03em;padding:14px 10px}
+.etichetta select{color:var(--inchiostro);font-size:16px;font-weight:400;padding:.6em .8em;border:1px solid var(--linea);border-radius:10px;background:var(--sfondo);min-height:46px;width:100%}
+
+.vista-testa{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;margin:14px 0 10px}
+.vista-testa h2{flex:1 1 220px;margin:0}
+.indietro{background:none;border:0;color:var(--accento);padding:.3em 0;cursor:pointer;font-size:.95rem;font-weight:500}
+.sottotitolo{color:var(--tenue);margin-top:-4px}
+.vuoto{text-align:center;padding:36px 16px;color:var(--tenue);background:var(--carta);border:1px dashed var(--linea);border-radius:var(--raggio)}
+.piede{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;align-items:center}
+.piede .nota{color:var(--tenue);font-size:.86rem;flex:1 1 200px}
+
+.scheda{background:var(--carta);border:1px solid var(--linea);border-radius:var(--raggio);padding:4px 18px;box-shadow:var(--ombra);margin:0}
+.campo{display:grid;grid-template-columns:minmax(120px,34%) 1fr;gap:4px 16px;padding:12px 0;border-bottom:1px solid var(--linea)}
+.campo:last-child{border-bottom:0}
+.campo dt{color:var(--tenue);font-size:.9rem}
+.campo dd{margin:0;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px;word-break:break-word}
+@media (max-width:540px){.campo{grid-template-columns:1fr}}
+.testo-libero{white-space:pre-wrap}
+.copia{background:none;border:1px solid var(--linea);border-radius:999px;font-size:.75rem;padding:.1em .6em;color:var(--tenue);cursor:pointer}
+
+.modulo{background:var(--carta);border:1px solid var(--linea);border-radius:var(--raggio);padding:18px;box-shadow:var(--ombra);display:grid;gap:14px}
+.etichetta{display:grid;gap:6px;font-size:.92rem;color:var(--tenue);font-weight:500}
+.etichetta input,.etichetta textarea{color:var(--inchiostro);font-size:16px;font-weight:400;padding:.65em .8em;border:1px solid var(--linea);border-radius:10px;background:var(--sfondo);min-height:46px;width:100%;-webkit-appearance:none;appearance:none}
+.etichetta textarea{resize:vertical;min-height:100px;line-height:1.45}
+.etichetta textarea.grande{min-height:240px}
+.etichetta input:focus,.etichetta textarea:focus{outline:2px solid var(--accento);border-color:transparent}
+.azioni{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end}
+.riga-strumenti{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.spunta{display:flex;align-items:center;gap:9px;color:var(--inchiostro);font-weight:400;cursor:pointer}
+.spunta input{width:20px;height:20px;accent-color:var(--accento);flex:none}
+.suggerimento{font-size:.88rem;color:var(--filo);margin:0}
+.suggerimento:empty{display:none}
+.errore{color:var(--pericolo);font-weight:500;margin:0}
+
+.porta-sfondo{min-height:calc(100vh - 80px);display:grid;place-items:center;padding:12px 0}
+.porta{width:100%;max-width:450px;background:var(--carta);border:1px solid var(--linea);border-radius:22px;padding:28px 24px;box-shadow:var(--ombra);text-align:center}
+.porta .logo svg{width:68px;height:68px}
+.porta form{display:grid;gap:12px;text-align:left;margin-top:18px}
+.porta > p{color:var(--tenue)}
+.porta .pila{display:grid;gap:10px;margin-top:20px}
+.porta .separatore{height:1px;background:var(--linea);margin:22px 0 14px}
+.avviso-blocco{background:var(--carta-2);border-radius:10px;padding:.5em .8em;font-size:.9rem}
+
+.chiave{font-family:var(--mono);font-size:1.2rem;letter-spacing:.05em;text-align:center;padding:18px 12px;border:2px dashed var(--filo);border-radius:12px;background:var(--carta-2);word-break:break-all;-webkit-user-select:all;user-select:all}
+.pannello{background:var(--carta);border:1px solid var(--linea);border-radius:var(--raggio);padding:18px;box-shadow:var(--ombra);margin-top:14px}
+.pannello h3{margin-bottom:6px}
+.pannello > p{color:var(--tenue);font-size:.94rem}
+.pannello .azioni{justify-content:flex-start;margin-top:10px}
+.pannello.delicato{border-color:var(--pericolo);box-shadow:none;background:transparent}
+.stato{list-style:none;padding:0;margin:0 0 6px;display:grid;gap:6px;font-size:.94rem}
+.stato li{display:flex;gap:8px}
+.stato li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--accento);margin-top:.55em}
+.archivi{list-style:none;padding:0;margin:10px 0 0;border-top:1px solid var(--linea)}
+.archivi li{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--linea);font-size:.92rem}
+.archivi .nome-file{font-family:var(--mono);font-size:.84rem;flex:1 1 220px;word-break:break-all}
+.archivi li.rimosso .nome-file{text-decoration:line-through;color:var(--tenue)}
+.persona{display:grid;gap:10px;padding:14px;border:1px solid var(--linea);border-radius:12px;background:var(--carta-2)}
+.persona-nomi{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:420px){.persona-nomi{grid-template-columns:1fr}}
+.campo-pw{font-family:var(--mono)}
+.passi{padding-left:1.3em;margin:0;display:grid;gap:8px}
+.nota-backup{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--presto-fondo);color:var(--presto);border-radius:12px;padding:10px 14px;margin-top:6px;font-size:.93rem}
+.messaggio{background:var(--carta);border-left:4px solid var(--filo);border-radius:10px;padding:14px 18px;margin-top:8px;box-shadow:var(--ombra)}
+.messaggio h2{font-size:1.1rem}
+
+.velo{position:fixed;inset:0;background:rgba(20,15,10,.5);display:grid;place-items:center;padding:16px;z-index:50}
+.finestra{background:var(--carta);border-radius:18px;padding:20px;max-width:430px;width:100%;box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.finestra form{display:grid;gap:12px}
+.finestra p{color:var(--tenue)}
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--inchiostro);color:var(--sfondo);padding:.7em 1.2em;border-radius:14px;z-index:60;max-width:calc(100% - 32px);box-shadow:0 6px 20px rgba(0,0,0,.25);font-size:.94rem;text-align:center}
+
+#print-area{display:none}
+@media print{
+  body{background:#fff;color:#000}
+  #app,.velo,.toast{display:none!important}
+  #print-area{display:block;font:11pt/1.4 Georgia,serif;color:#000}
+  #print-area h1{font-size:18pt;margin:0 0 4pt}
+  #print-area h2{font-size:14pt;border-bottom:1px solid #888;padding-bottom:2pt;margin:18pt 0 6pt}
+  #print-area .p-parte{break-after:page}
+  #print-area .p-parte:last-child{break-after:auto}
+  #print-area .p-codice{font:14pt/1.7 "Courier New",monospace;border:1px dashed #555;padding:12pt;word-break:break-all;margin:16pt 0}
+  #print-area .p-scheda{break-inside:avoid;margin:8pt 0;padding-bottom:8pt;border-bottom:1px solid #ddd}
+  #print-area h3{font-size:12pt;margin:0 0 4pt}
+  #print-area table{border-collapse:collapse;width:100%}
+  #print-area td{padding:2pt 8pt 2pt 0;vertical-align:top}
+  #print-area td:first-child{color:#555;width:36%}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="print-area"></div>
+<script id="archivio-incorporato" type="application/json">{"formato":"filo-di-casa-famiglia","versione":2,"creato":"2026-11-07T23:11:45.273Z","slots":[{"salt":"tn6MLRaOUCWSrTLDGJRSpQ==","iter":600000,"iv":"eCXi/qv0tgRfmXpM","ct":"iE95xVeY1Imrc3QjjpCLWntMkXAlnu81xtESJFPKTFS0EVenyrd+P07lBAcq0cWA"},{"salt":"NwHdw7ciy4sKFleQTt0ZgA==","iter":600000,"iv":"v+DA+TwbQSBB2h5N","ct":"NLgFo/gx2nd/WTuF1LTGf7gryb/be5uFXRAQlLVYHJ1Kz2B5YZ3tVHwYpZvy83lS"},{"salt":"U/CTjyPTlZf41vuPJv7obQ==","iter":600000,"iv":"T43BkSZRCRaAGdGR","ct":"gwoHFupF2AH7YBZ78mOrdMvXh2gEP+w/kmAyw0bw+3OsoD9eKquPS/C8yayHL2k/"}],"data":{"iv":"YgaAxJ0lenviUaZj","ct":"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"}}</script>
+<script>
+(function(){
+'use strict';
+// Copia della pagina, usata per generare gli archivi per i familiari.
+const SORGENTE = '<!doctype html>\n' + document.documentElement.outerHTML;
+
+const $ = (s, r = document) => r.querySelector(s);
+const enc = new TextEncoder(), dec = new TextDecoder();
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ora = () => new Date().toISOString();
+const oggiFile = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
+
+/* ---------- Sezioni ---------- */
+const SEZIONI = [
+  {id:'documenti', nome:'Documenti personali', icona:'🪪', descr:"Carta d'identità, passaporto, tessera sanitaria, patente", ph:"Es. Carta d'identità", campi:[
+    {k:'tipo', l:'Tipo di documento'},
+    {k:'intestatario', l:'Intestatario'},
+    {k:'numero', l:'Numero'},
+    {k:'rilascio', l:'Rilasciato da / il'},
+    {k:'scadenza', l:'Scadenza', t:'date'},
+    {k:'dove', l:"Dove si trova l'originale"}]},
+  {id:'conti', nome:'Conti e patrimonio', icona:'🏦', descr:'Conti correnti, investimenti, immobili, previdenza', ph:'Es. Conto corrente principale', campi:[
+    {k:'tipo', l:'Tipo', ph:'Conto, deposito titoli, immobile, fondo pensione…'},
+    {k:'istituto', l:'Banca o ente'},
+    {k:'intestatari', l:'Intestatari'},
+    {k:'riferimento', l:'IBAN o riferimento'},
+    {k:'referente', l:'Filiale o referente'},
+    {k:'accesso', l:'Come accedere e cosa fare', t:'area'}]},
+  {id:'polizze', nome:'Polizze assicurative', icona:'🛡️', descr:'Vita, casa, auto, salute, infortuni', ph:'Es. Polizza casa', campi:[
+    {k:'compagnia', l:'Compagnia'},
+    {k:'tipo', l:'Tipo di copertura'},
+    {k:'numero', l:'Numero di polizza'},
+    {k:'scadenza', l:'Scadenza o rinnovo', t:'date'},
+    {k:'beneficiari', l:'Beneficiari'},
+    {k:'agente', l:'Agente o contatto'}]},
+  {id:'contatti', nome:'Contatti importanti', icona:'📇', descr:'Medico, notaio, commercialista, amici fidati', ph:'Es. Notaio di famiglia', campi:[
+    {k:'ruolo', l:'Ruolo'},
+    {k:'nome', l:'Nome e cognome'},
+    {k:'telefono', l:'Telefono', t:'tel'},
+    {k:'email', l:'Email', t:'email'},
+    {k:'indirizzo', l:'Indirizzo'},
+    {k:'quando', l:'Quando contattarlo', t:'area'}]},
+  {id:'digitale', nome:'Vita digitale', icona:'💻', descr:'Email, social, dispositivi, abbonamenti', ph:'Es. Account email principale', campi:[
+    {k:'servizio', l:'Servizio o dispositivo'},
+    {k:'utente', l:'Nome utente o email'},
+    {k:'accesso', l:'Password o dove trovarla'},
+    {k:'recupero', l:'Verifica in due passaggi e recupero'},
+    {k:'volonta', l:'Cosa desideri che si faccia', t:'area', ph:'Chiudere, conservare, trasformare in account commemorativo…'}]},
+  {id:'istruzioni', nome:'Istruzioni per i familiari', icona:'✉️', descr:'Volontà, indicazioni pratiche, messaggi personali', ph:'Es. Cosa fare nei primi giorni', campi:[
+    {k:'perChi', l:'Per chi'},
+    {k:'quando', l:'Quando leggerle'},
+    {k:'testo', l:'Istruzioni', t:'area', grande:true}]}
+];
+const SEZ = Object.fromEntries(SEZIONI.map(s => [s.id, s]));
+
+const LOGO = '<svg viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round"><path class="logo-l1" d="M8 22 24 9l16 13v17H8z" stroke-width="3"/><path class="logo-l1" d="M19 39V30a5 5 0 0 1 10 0v9" stroke-width="3"/><path class="logo-l2" d="M40 39c4 0 6 2.5 4.5 5s-6.5 1.5-5-2" stroke-width="2.5"/></svg>';
+const LUCCHETTO = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+
+/* ---------- Crittografia (Web Crypto: PBKDF2-SHA256 + AES-256-GCM) ---------- */
+const ITERAZIONI = 600000;
+const casuali = n => crypto.getRandomValues(new Uint8Array(n));
+function b64(u8){ let s = ''; for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(s); }
+const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function derivaChiave(segreto, salt, iter){
+  const base = await crypto.subtle.importKey('raw', enc.encode(segreto.normalize('NFC')), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2', salt, iterations:iter, hash:'SHA-256'}, base, {name:'AES-GCM', length:256}, false, ['encrypt','decrypt']);
+}
+async function cifra(chiave, bytes){ const iv = casuali(12); const ct = new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM', iv}, chiave, bytes)); return {iv:b64(iv), ct:b64(ct)}; }
+async function decifra(chiave, o){ return new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM', iv:unb64(o.iv)}, chiave, unb64(o.ct))); }
+async function avvolgi(segreto, dek){ const salt = casuali(16); const k = await derivaChiave(segreto, salt, ITERAZIONI); return Object.assign({salt:b64(salt), iter:ITERAZIONI}, await cifra(k, dek)); }
+async function svolgi(segreto, w){ const k = await derivaChiave(segreto, unb64(w.salt), w.iter); return decifra(k, w); }
+const chiaveDati = dek => crypto.subtle.importKey('raw', dek, 'AES-GCM', false, ['encrypt','decrypt']);
+
+function generaDa(alfabeto, n){
+  const out = [], lim = 256 - (256 % alfabeto.length);
+  while (out.length < n) for (const b of casuali(n * 2)) if (b < lim && out.length < n) out.push(alfabeto[b % alfabeto.length]);
+  return out.join('');
+}
+const generaPassword = () => generaDa('abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789', 20).match(/.{4}/g).join('-');
+const generaChiaveRecupero = () => generaDa('ABCDEFGHJKLMNPQRSTUVWXYZ23456789', 24).match(/.{4}/g).join('-');
+const normRecupero = s => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+const normNome = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+// Il segreto di ogni familiare unisce nome e password: il nome non compare mai in chiaro nella pagina.
+const segretoFamiliare = (nome, pw) => 'filo-famiglia\u0000' + normNome(nome) + '\u0000' + pw;
+
+/* ---------- Sigillo: chiave divisa tra più custodi (schema di Shamir su GF(256)) ---------- */
+const GF_EXP = new Uint8Array(510), GF_LOG = new Uint8Array(256);
+(() => { let x = 1; for (let i = 0; i < 255; i++) { GF_EXP[i] = x; GF_LOG[x] = i; x = x ^ (((x << 1) ^ ((x & 0x80) ? 0x1b : 0)) & 0xff); } for (let i = 255; i < 510; i++) GF_EXP[i] = GF_EXP[i - 255]; })();
+const gfMul = (a, b) => (a && b) ? GF_EXP[GF_LOG[a] + GF_LOG[b]] : 0;
+const gfDiv = (a, b) => a ? GF_EXP[(GF_LOG[a] + 255 - GF_LOG[b]) % 255] : 0;
+function dividiSegreto(segreto, n, k){
+  const parti = Array.from({length:n}, (_, i) => ({x:i + 1, y:new Uint8Array(segreto.length)}));
+  for (let b = 0; b < segreto.length; b++) {
+    const coeff = [segreto[b], ...casuali(k - 1)];
+    for (const p of parti) { let y = 0; for (let c = k - 1; c >= 0; c--) y = gfMul(y, p.x) ^ coeff[c]; p.y[b] = y; }
+  }
+  return parti;
+}
+function ricomponiSegreto(parti){
+  const out = new Uint8Array(parti[0].y.length);
+  for (let b = 0; b < out.length; b++) {
+    let s = 0;
+    for (let j = 0; j < parti.length; j++) {
+      let num = 1, den = 1;
+      for (let m = 0; m < parti.length; m++) if (m !== j) { num = gfMul(num, parti[m].x); den = gfMul(den, parti[m].x ^ parti[j].x); }
+      s ^= gfMul(parti[j].y[b], gfDiv(num, den));
+    }
+    out[b] = s;
+  }
+  return out;
+}
+const B32 = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+function aB32(u8){ let bits = 0, val = 0, out = ''; for (const b of u8) { val = ((val << 8) | b) & 0xffff; bits += 8; while (bits >= 5) { out += B32[(val >>> (bits - 5)) & 31]; bits -= 5; } } if (bits) out += B32[(val << (5 - bits)) & 31]; return out; }
+function daB32(s){ let bits = 0, val = 0; const out = []; for (const ch of s) { const v = B32.indexOf(ch); if (v < 0) return null; val = ((val << 5) | v) & 0xffff; bits += 5; if (bits >= 8) { out.push((val >>> (bits - 8)) & 0xff); bits -= 8; } } return new Uint8Array(out); }
+async function codificaParte(id, k, p){
+  const corpo = new Uint8Array([id[0], id[1], k, p.x, ...p.y]);
+  const h = new Uint8Array(await crypto.subtle.digest('SHA-256', corpo));
+  return 'FILO-' + aB32(new Uint8Array([...corpo, h[0], h[1]])).match(/.{1,4}/g).join('-');
+}
+async function decodificaParte(testo){
+  const u = daB32(String(testo || '').toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/^FILO/, ''));
+  if (!u || u.length < 38) return null;
+  const corpo = u.slice(0, 36), h = new Uint8Array(await crypto.subtle.digest('SHA-256', corpo));
+  if (h[0] !== u[36] || h[1] !== u[37]) return null;
+  return {id:b64(corpo.slice(0, 2)), k:corpo[2], x:corpo[3], y:corpo.slice(4)};
+}
+async function creaSigillo(n, k, custodi){
+  const chiave = casuali(32), id = casuali(2), codici = [];
+  for (const p of dividiSegreto(chiave, n, k)) codici.push(await codificaParte(id, k, p));
+  S.dati.sigillo = {id:b64(id), chiave:b64(chiave), n, k, custodi, parti:codici, creato:ora()};
+  await salva();
+}
+
+/* ---------- Archivio locale ---------- */
+const CHIAVE_LS = 'filoDiCasa.archivio.v1';
+function storageDisponibile(){ try { localStorage.setItem('filoDiCasa.prova', '1'); localStorage.removeItem('filoDiCasa.prova'); return true; } catch (e) { return false; } }
+function leggiVault(){ try { const s = localStorage.getItem(CHIAVE_LS); return s ? JSON.parse(s) : null; } catch (e) { return null; } }
+function scriviVault(v){ try { localStorage.setItem(CHIAVE_LS, JSON.stringify(v)); return true; } catch (e) { avviso('Salvataggio non riuscito: spazio esaurito o archiviazione non disponibile.'); return false; } }
+function cancellaVault(){ try { localStorage.removeItem(CHIAVE_LS); } catch (e) {} }
+
+/* ---------- Stato ---------- */
+let INCORPORATO = null;
+try { INCORPORATO = JSON.parse($('#archivio-incorporato').textContent); } catch (e) {}
+const S = {
+  modo: INCORPORATO ? 'familiari' : 'proprietario',
+  vault:null, dek:null, key:null, dati:null,
+  vista:{tipo:'home'}, ricerca:'', pre:null, motivo:'',
+  ultimaAttivita:Date.now(), dialogoFile:0, modali:new Set()
+};
+const proprietario = () => S.modo === 'proprietario';
+
+function normalizza(d){ d = d || {}; d.schede = Array.isArray(d.schede) ? d.schede : []; d.archiviFamiliari = Array.isArray(d.archiviFamiliari) ? d.archiviFamiliari : []; return d; }
+async function salva(){
+  S.dati.aggiornato = ora();
+  S.vault.data = await cifra(S.key, enc.encode(JSON.stringify(S.dati)));
+  S.vault.aggiornato = S.dati.aggiornato;
+  return scriviVault(S.vault);
+}
+async function apri(dek, vault, vista){
+  const key = await chiaveDati(dek);
+  const dati = JSON.parse(dec.decode(await decifra(key, vault.data)));
+  if (S.dek) S.dek.fill(0);
+  S.vault = vault; S.dek = dek; S.key = key; S.dati = normalizza(dati);
+  S.vista = vista || {tipo:'home'}; S.ricerca = ''; S.motivo = ''; S.pre = null;
+  S.ultimaAttivita = Date.now();
+  render();
+}
+async function creaArchivio(pw){
+  const dek = casuali(32), rk = generaChiaveRecupero(), t = ora();
+  const vault = {formato:'filo-di-casa', versione:1, creato:t, pw:await avvolgi(pw, dek), rk:await avvolgi(normRecupero(rk), dek), data:null};
+  S.vault = vault; S.dek = dek; S.key = await chiaveDati(dek);
+  S.dati = normalizza({versione:1, creato:t, ultimoBackup:null});
+  await salva();
+  if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+  S.ultimaAttivita = Date.now(); S.pre = null;
+  S.vista = {tipo:'mostraChiave', chiave:rk, prima:true};
+  render();
+}
+
+/* ---------- Blocco automatico ---------- */
+const MINUTI_BLOCCO = 5;
+function blocca(motivo){
+  if (S.dek) S.dek.fill(0);
+  S.dek = null; S.key = null; S.dati = null; S.utente = ''; S.sigilloAperto = false; S.ricerca = ''; S.vista = {tipo:'home'}; S.pre = null;
+  S.motivo = motivo === 'inattivita' ? 'Bloccato dopo ' + MINUTI_BLOCCO + ' minuti di inattività.' : motivo === 'background' ? "Bloccato perché l'app è passata in background." : '';
+  [...S.modali].forEach(c => c(null));
+  $('#print-area').innerHTML = '';
+  render();
+}
+['pointerdown','keydown','input','touchstart','wheel'].forEach(ev => document.addEventListener(ev, () => { S.ultimaAttivita = Date.now(); }, {passive:true, capture:true}));
+setInterval(() => { if (S.key && Date.now() - S.ultimaAttivita > MINUTI_BLOCCO * 60000) blocca('inattivita'); }, 5000);
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden || !S.key) return;
+  if (S.dialogoFile && Date.now() - S.dialogoFile < 120000) return; // selezione di un file in corso
+  blocca('background');
+});
+window.addEventListener('pagehide', () => { if (S.key) blocca('background'); });
+
+/* ---------- Utilità interfaccia ---------- */
+let timerAvviso;
+function avviso(t){
+  let el = $('.toast');
+  if (!el) { el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+  el.textContent = t; clearTimeout(timerAvviso); timerAvviso = setTimeout(() => el.remove(), 4200);
+}
+function modale(html, monta){
+  return new Promise(res => {
+    const v = document.createElement('div'); v.className = 'velo';
+    v.innerHTML = '<div class="finestra" role="dialog" aria-modal="true">' + html + '</div>';
+    document.body.appendChild(v);
+    const chiudi = val => { if (!v.isConnected) return; v.remove(); S.modali.delete(chiudi); res(val); };
+    S.modali.add(chiudi); monta(v, chiudi);
+  });
+}
+function conferma(testo, o){
+  o = o || {};
+  return modale('<h3>' + esc(o.titolo || 'Conferma') + '</h3><p>' + esc(testo) + '</p><div class="azioni"><button type="button" class="pulsante" data-m="no">Annulla</button><button type="button" class="pulsante ' + (o.pericolo ? 'pericolo-pieno' : 'primario') + '" data-m="si">' + esc(o.ok || 'Conferma') + '</button></div>',
+    (v, chiudi) => { $('[data-m=no]', v).onclick = () => chiudi(false); $('[data-m=si]', v).onclick = () => chiudi(true); });
+}
+function chiediTesto(o){
+  return modale('<h3>' + esc(o.titolo) + '</h3><p>' + esc(o.testo) + '</p><form><input class="campo-modale" type="' + (o.tipo || 'text') + '" autocomplete="off" autocapitalize="off" spellcheck="false" required style="width:100%;min-height:46px;font-size:16px;padding:.6em .8em;border:1px solid var(--linea);border-radius:10px;background:var(--sfondo)"><div class="azioni"><button type="button" class="pulsante" data-m="no">Annulla</button><button class="pulsante primario">' + esc(o.ok || 'Continua') + '</button></div></form>',
+    (v, chiudi) => { const i = $('input', v); $('form', v).addEventListener('submit', e => { e.preventDefault(); e.stopPropagation(); chiudi(i.value); }); $('[data-m=no]', v).onclick = () => chiudi(null); setTimeout(() => i.focus(), 30); });
+}
+async function occupato(form, testo, fn){
+  const b = form.querySelector('button[type=submit]'); const orig = b ? b.textContent : '';
+  if (b) { b.disabled = true; b.textContent = testo; }
+  try { return await fn(); } finally { if (b && b.isConnected) { b.disabled = false; b.textContent = orig; } }
+}
+function mostraErrore(form, msg){
+  let p = form.querySelector('.errore');
+  if (!p) { p = document.createElement('p'); p.className = 'errore'; p.setAttribute('role', 'alert'); form.appendChild(p); }
+  p.textContent = msg;
+}
+function scarica(nome, contenuto, tipo){
+  const url = URL.createObjectURL(new Blob([contenuto], {type:tipo}));
+  const a = document.createElement('a'); a.href = url; a.download = nome; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
+function dataIt(iso){
+  if (!iso) return '';
+  const d = /^\d{4}-\d{2}-\d{2}$/.test(iso) ? new Date(iso + 'T00:00:00') : new Date(iso);
+  return isNaN(d) ? String(iso) : d.toLocaleDateString('it-IT', {day:'2-digit', month:'2-digit', year:'numeric'});
+}
+function statoScadenza(v){
+  if (!v || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return null;
+  const oggi = new Date(); oggi.setHours(0,0,0,0);
+  const g = Math.round((new Date(v + 'T00:00:00') - oggi) / 864e5);
+  if (g < 0) return {cls:'scaduto', txt:'Scaduto'};
+  if (g === 0) return {cls:'', txt:'Scade oggi'};
+  if (g <= 90) return {cls:'', txt:'Scade tra ' + g + (g === 1 ? ' giorno' : ' giorni')};
+  return null;
+}
+const normTesto = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+const trova = id => S.dati.schede.find(s => s.id === id);
+const nuovoId = () => Array.from(casuali(8), b => b.toString(16).padStart(2, '0')).join('');
+function riepilogo(s){
+  const sez = SEZ[s.sezione]; if (!sez) return '';
+  return sez.campi.filter(c => c.t !== 'area' && c.t !== 'date' && s.campi && s.campi[c.k]).slice(0, 2).map(c => s.campi[c.k]).join(' · ');
+}
+function cerca(q){
+  const parole = normTesto(q).split(/\s+/).filter(Boolean);
+  return S.dati.schede.filter(s => {
+    const t = normTesto([s.titolo, s.note, (SEZ[s.sezione] || {}).nome].concat(Object.values(s.campi || {})).join(' '));
+    return parole.every(p => t.includes(p));
+  }).sort((a, b) => a.titolo.localeCompare(b.titolo, 'it'));
+}
+function pulisciScheda(s){
+  const sez = SEZ[s.sezione], campi = {};
+  sez.campi.forEach(c => { if (s.campi && s.campi[c.k]) campi[c.k] = String(s.campi[c.k]).trim(); });
+  return {id:nuovoId(), sezione:s.sezione, titolo:String(s.titolo).trim(), campi, note:String(s.note || '').trim(), sigillata:!!s.sigillata, creata:ora(), aggiornata:ora()};
+}
+
+/* ---------- Schermate prima dello sblocco ---------- */
+function campiNuovaPassword(autocompl){
+  autocompl = autocompl || 'new-password';
+  const attr = 'required autocomplete="' + autocompl + '" autocapitalize="off" autocorrect="off" spellcheck="false"';
+  return '<label class="etichetta">Password (almeno 12 caratteri)<input type="password" name="pw1" minlength="12" ' + attr + '></label>' +
+    '<label class="etichetta">Ripeti la password<input type="password" name="pw2" ' + attr + '></label>' +
+    '<div class="riga-strumenti"><button type="button" class="pulsante piccolo" data-azione="genera-pw">Genera una password per me</button>' +
+    '<label class="spunta"><input type="checkbox" data-mostra-pw> Mostra</label></div><p class="suggerimento" data-nota-pw></p>';
+}
+function leggiNuovaPassword(f){
+  const a = f.pw1.value, b = f.pw2.value;
+  if ([...a].length < 12) { mostraErrore(f, 'La password deve avere almeno 12 caratteri.'); return null; }
+  if (a !== b) { mostraErrore(f, 'Le due password non coincidono.'); return null; }
+  return a;
+}
+const inputFile = testo => '<label class="pulsante">' + testo + '<input type="file" class="nascosto" data-file></label>';
+
+function schermataEsterna(){
+  if (!proprietario()) {
+    return '<div class="porta"><div class="logo">' + LOGO + '</div><h1>Il Filo di Casa</h1>' +
+      (S.motivo ? '<p class="avviso-blocco">' + esc(S.motivo) + '</p>' : '') +
+      '<p>Archivio di famiglia condiviso il ' + esc(dataIt(INCORPORATO.creato)) + '. ' + (INCORPORATO.slots ? 'Inserisci il tuo nome e la password personale che ti è stata comunicata.' : 'Inserisci la password che ti è stata comunicata di persona.') + '</p>' +
+      '<form data-form="sblocca-famiglia">' + (INCORPORATO.slots ? '<label class="etichetta">Nome<input name="nome" required autocomplete="given-name" autocorrect="off" spellcheck="false" placeholder="Il tuo nome"></label>' : '') + '<label class="etichetta">Password<input type="password" name="pw" required autocomplete="off" autocapitalize="off" spellcheck="false"></label><button class="pulsante primario" type="submit">Apri l\'archivio</button></form>' +
+      '<p style="font-size:.85rem;margin-top:16px">Il contenuto è cifrato: senza la password nessuno può leggerlo, nemmeno chi ospita questa pagina.</p></div>';
+  }
+  const v = leggiVault();
+  if (!v) {
+    if (S.pre === 'crea') {
+      return '<div class="porta"><div class="logo">' + LOGO + '</div><h1>Crea il tuo archivio</h1>' +
+        '<p>Scegli una password di almeno 12 caratteri, oppure lascia che l\'app ne generi una. Subito dopo riceverai una chiave di recupero: senza password e senza chiave i dati non si possono recuperare.</p>' +
+        '<form data-form="crea">' + campiNuovaPassword() + '<button class="pulsante primario" type="submit">Crea l\'archivio</button></form>' +
+        '<button class="collegamento" data-azione="pre" data-pre="">Indietro</button></div>';
+    }
+    const ok = storageDisponibile();
+    return '<div class="porta"><div class="logo">' + LOGO + '</div><h1>Il Filo di Casa</h1>' +
+      '<p>L\'archivio di famiglia per documenti, conti, polizze, contatti, vita digitale e istruzioni per i tuoi cari. Tutto resta cifrato su questo dispositivo.</p>' +
+      (ok ? '' : '<p class="errore">Questo browser non permette di salvare dati, forse per la navigazione privata. Apri l\'app in una finestra normale.</p>') +
+      '<div class="pila"><button class="pulsante primario" data-azione="pre" data-pre="crea"' + (ok ? '' : ' disabled') + '>Crea il tuo archivio</button>' + inputFile('Ripristina da un backup') + '</div></div>';
+  }
+  if (S.pre === 'recupero') {
+    return '<div class="porta"><div class="logo">' + LOGO + '</div><h1>Chiave di recupero</h1>' +
+      '<p>Inserisci la chiave di 24 caratteri che hai trascritto quando hai creato l\'archivio. Subito dopo sceglierai una nuova password.</p>' +
+      '<form data-form="recupero"><label class="etichetta">Chiave di recupero<input name="chiave" required autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX-XXXX"></label><button class="pulsante primario" type="submit">Verifica</button></form>' +
+      '<div class="separatore"></div><p style="font-size:.9rem">Hai un backup cifrato e ne ricordi la password?</p>' + inputFile('Ripristina da un backup') +
+      '<div class="separatore"></div><button class="collegamento" data-azione="pre" data-pre="">Torna allo sblocco</button><br>' +
+      '<button class="collegamento rosso" data-azione="elimina-tutto">Elimina l\'archivio da questo dispositivo</button></div>';
+  }
+  return '<div class="porta"><div class="logo">' + LOGO + '</div><h1>Il Filo di Casa</h1>' +
+    (S.motivo ? '<p class="avviso-blocco">' + esc(S.motivo) + '</p>' : '<p>L\'archivio è bloccato.</p>') +
+    '<form data-form="sblocca"><label class="etichetta">Password<input type="password" name="pw" required autocomplete="current-password" autocapitalize="off" spellcheck="false"></label><button class="pulsante primario" type="submit">Sblocca</button></form>' +
+    '<button class="collegamento" data-azione="pre" data-pre="recupero" style="margin-top:10px">Ho dimenticato la password</button></div>';
+}
+
+/* ---------- Viste interne ---------- */
+function testata(){
+  const senzaCerca = S.vista.tipo === 'mostraChiave' || S.vista.obbligatoria;
+  return '<header class="testata"><button class="marchio" data-azione="home">' + LOGO + '<span>Il Filo di Casa</span></button>' +
+    '<button class="pulsante piccolo" data-azione="blocca">' + LUCCHETTO + ' Blocca</button></header>' +
+    (proprietario() ? '' : '<div class="fascia">Sola lettura · archivio condiviso il ' + esc(dataIt(S.dati.creato)) + '</div>') +
+    (senzaCerca ? '' : '<div class="cerca"><input id="cerca" type="search" placeholder="Cerca in tutte le schede" value="' + esc(S.ricerca) + '" autocomplete="off" aria-label="Cerca in tutte le schede"></div>');
+}
+function rigaScheda(s, conSezione){
+  const st = statoScadenza(s.campi && s.campi.scadenza), r = riepilogo(s);
+  return '<button class="riga" data-azione="apri" data-id="' + esc(s.id) + '">' +
+    (conSezione ? '<span class="icona-sez" aria-hidden="true">' + SEZ[s.sezione].icona + '</span>' : '') +
+    '<span class="riga-testo"><strong>' + esc(s.titolo) + '</strong>' + (r ? '<small>' + esc(r) + '</small>' : '') + '</span>' +
+    (s.sigillata ? '<span class="badge sig" title="Scheda sigillata">🔏 Sigillata</span>' : '') +
+    (st ? '<span class="badge ' + st.cls + '">' + st.txt + '</span>' : '') + '<span class="freccia" aria-hidden="true">›</span></button>';
+}
+function vistaHome(){
+  const d = S.dati; let h = '';
+  if (!proprietario() && S.utente) h += '<h2 style="margin:8px 0 4px">Ciao, ' + esc(S.utente) + '</h2>';
+  if (!proprietario() && d.sigillo) {
+    h += S.sigilloAperto
+      ? '<div class="fascia">🔏 Sigillo aperto: ' + d.sigillo.conteggio + (d.sigillo.conteggio === 1 ? ' scheda sigillata ora visibile.' : ' schede sigillate ora visibili.') + '</div>'
+      : '<section class="pannello sigillo"><h3>🔏 Sezione sigillata</h3><p>' + d.sigillo.conteggio + (d.sigillo.conteggio === 1 ? ' scheda destinata a essere letta solo dopo la mia morte. Per aprirla' : ' schede destinate a essere lette solo dopo la mia morte. Per aprirle') + ' servono almeno ' + d.sigillo.k + ' parti della chiave del sigillo, custodite da: ' + esc(d.sigillo.custodi.join(', ')) + '.</p><div class="azioni"><button class="pulsante" data-azione="vai" data-vista="apriSigillo">Apri il sigillo</button></div></section>';
+  }
+  if (!proprietario() && d.messaggio) h += '<div class="messaggio"><h2>Un messaggio per voi</h2><p class="testo-libero" style="margin:0">' + esc(d.messaggio) + '</p></div>';
+  if (proprietario() && d.schede.length) {
+    const ub = d.ultimoBackup;
+    if (!ub || Date.now() - new Date(ub) > 30 * 864e5)
+      h += '<div class="nota-backup"><span>' + (ub ? "L'ultimo backup cifrato risale al " + dataIt(ub) + '.' : 'Non hai ancora esportato un backup cifrato.') + '</span><button class="pulsante piccolo" data-azione="esporta-backup">Esporta ora</button></div>';
+  }
+  const scad = d.schede.filter(s => statoScadenza(s.campi && s.campi.scadenza)).sort((a, b) => a.campi.scadenza.localeCompare(b.campi.scadenza));
+  h += '<div class="griglia">' + SEZIONI.map(sez => {
+    const n = d.schede.filter(s => s.sezione === sez.id).length;
+    if (!proprietario() && !n) return '';
+    return '<button class="carta-sezione" data-azione="sezione" data-id="' + sez.id + '"><span class="emoji" aria-hidden="true">' + sez.icona + '</span><span class="nome">' + sez.nome + '</span><span class="descr">' + esc(sez.descr) + '</span><span class="conteggio">' + (n === 1 ? '1 scheda' : n + ' schede') + '</span></button>';
+  }).join('') +
+  (proprietario() ? '<button class="carta-sezione sicurezza" data-azione="sicurezza"><span class="emoji" aria-hidden="true">🔐</span><span class="nome">Backup e sicurezza</span><span class="descr">Password, chiave di recupero, backup, condivisione con i familiari</span></button>' : '') + '</div>';
+  if (scad.length) h += '<section class="blocco"><h2>Scadenze vicine</h2><div class="elenco">' + scad.map(s => rigaScheda(s, true)).join('') + '</div></section>';
+  if (!proprietario()) h += '<div class="piede"><button class="pulsante piccolo" data-azione="stampa-tutto">Stampa tutto</button></div>';
+  return h;
+}
+function vistaRicerca(){
+  const r = cerca(S.ricerca);
+  return '<div class="vista-testa"><h2>Risultati</h2><button class="collegamento" data-azione="pulisci-ricerca">Cancella ricerca</button></div>' +
+    (r.length ? '<div class="elenco">' + r.map(s => rigaScheda(s, true)).join('') + '</div>' : '<p class="vuoto">Nessuna scheda corrisponde a «' + esc(S.ricerca) + '».</p>');
+}
+function vistaSezione(id){
+  const sez = SEZ[id]; if (!sez) return vistaHome();
+  const l = S.dati.schede.filter(s => s.sezione === id).sort((a, b) => a.titolo.localeCompare(b.titolo, 'it'));
+  let h = '<button class="indietro" data-azione="home">‹ Home</button><div class="vista-testa"><h2><span aria-hidden="true">' + sez.icona + '</span> ' + sez.nome + '</h2>' +
+    (proprietario() ? '<button class="pulsante primario" data-azione="nuova" data-sezione="' + id + '">+ Nuova scheda</button>' : '') + '</div><p class="sottotitolo">' + esc(sez.descr) + '</p>';
+  if (!l.length) return h + '<div class="vuoto"><p>Nessuna scheda in questa sezione.</p>' + (proprietario() ? '<button class="pulsante primario" data-azione="nuova" data-sezione="' + id + '">Aggiungi la prima</button>' : '') + '</div>';
+  return h + '<div class="elenco">' + l.map(s => rigaScheda(s)).join('') + '</div><div class="piede"><button class="pulsante piccolo" data-azione="stampa-sezione" data-id="' + id + '">Stampa questa sezione</button></div>';
+}
+function vistaScheda(id){
+  const s = trova(id); if (!s) { S.vista = {tipo:'home'}; return vistaHome(); }
+  const sez = SEZ[s.sezione];
+  const righe = sez.campi.map(c => {
+    const v = s.campi && s.campi[c.k]; if (!v) return '';
+    let val;
+    if (c.t === 'date') { const st = statoScadenza(v); val = esc(dataIt(v)) + (st ? ' <span class="badge ' + st.cls + '">' + st.txt + '</span>' : ''); }
+    else if (c.t === 'tel') val = '<a href="tel:' + esc(v.replace(/[^\d+]/g, '')) + '">' + esc(v) + '</a>';
+    else if (c.t === 'email') val = '<a href="mailto:' + esc(v) + '">' + esc(v) + '</a>';
+    else val = '<span class="testo-libero">' + esc(v) + '</span>';
+    if (c.t !== 'area' && c.t !== 'date') val += '<button class="copia" data-azione="copia" data-valore="' + esc(v) + '">Copia</button>';
+    return '<div class="campo"><dt>' + esc(c.l) + '</dt><dd>' + val + '</dd></div>';
+  }).join('') + (s.note ? '<div class="campo"><dt>Note</dt><dd><span class="testo-libero">' + esc(s.note) + '</span></dd></div>' : '');
+  return '<button class="indietro" data-azione="sezione" data-id="' + sez.id + '">‹ ' + sez.nome + '</button>' +
+    '<div class="vista-testa"><h2>' + esc(s.titolo) + '</h2>' + (proprietario() ? '<button class="pulsante" data-azione="modifica" data-id="' + s.id + '">Modifica</button>' : '') + '</div>' +
+    (s.sigillata ? '<div class="fascia">🔏 ' + (proprietario() ? 'Scheda sigillata: nell\'archivio dei familiari si apre solo con le parti della chiave del sigillo.' : 'Scheda della sezione sigillata.') + '</div>' : '') +
+    (righe ? '<dl class="scheda">' + righe + '</dl>' : '<p class="vuoto">Questa scheda non contiene ancora informazioni.</p>') +
+    '<div class="piede"><span class="nota">Aggiornata il ' + esc(dataIt(s.aggiornata)) + '</span><button class="pulsante piccolo" data-azione="stampa-scheda" data-id="' + s.id + '">Stampa</button>' +
+    (proprietario() ? '<button class="pulsante piccolo pericolo" data-azione="elimina" data-id="' + s.id + '">Elimina</button>' : '') + '</div>';
+}
+function vistaModifica(id, sezione){
+  const s = id ? trova(id) : {sezione, titolo:'', campi:{}, note:''};
+  if (!s) return vistaHome();
+  const sez = SEZ[s.sezione];
+  const campi = sez.campi.map(c => {
+    const v = esc(s.campi[c.k] || ''), ph = c.ph ? ' placeholder="' + esc(c.ph) + '"' : '';
+    if (c.t === 'area') return '<label class="etichetta">' + esc(c.l) + '<textarea name="c_' + c.k + '"' + ph + (c.grande ? ' class="grande"' : '') + '>' + v + '</textarea></label>';
+    const tipo = c.t === 'date' ? 'date' : c.t === 'tel' ? 'tel' : c.t === 'email' ? 'email' : 'text';
+    return '<label class="etichetta">' + esc(c.l) + '<input type="' + tipo + '" name="c_' + c.k + '" value="' + v + '"' + ph + ' autocomplete="off"></label>';
+  }).join('');
+  return '<div class="vista-testa"><h2><span aria-hidden="true">' + sez.icona + '</span> ' + (id ? 'Modifica scheda' : 'Nuova scheda') + '</h2></div>' +
+    '<form class="modulo" data-form="scheda" data-id="' + (id || '') + '" data-sezione="' + sez.id + '">' +
+    '<label class="etichetta">Titolo<input name="titolo" required value="' + esc(s.titolo) + '" placeholder="' + esc(sez.ph) + '" autocomplete="off"></label>' + campi +
+    '<label class="etichetta">Note<textarea name="note">' + esc(s.note) + '</textarea></label>' +
+    '<label class="spunta"><input type="checkbox" name="sigillata"' + (s.sigillata ? ' checked' : '') + '> 🔏 Sigilla: i familiari potranno leggerla solo dopo la mia morte, con le parti della chiave del sigillo</label>' +
+    '<div class="azioni"><button type="button" class="pulsante" data-azione="' + (id ? 'apri' : 'sezione') + '" data-id="' + (id || sez.id) + '">Annulla</button><button type="submit" class="pulsante primario">Salva</button></div></form>';
+}
+function vistaSicurezza(){
+  const d = S.dati;
+  const archivi = d.archiviFamiliari.map((a, i) => '<li class="' + (a.rimosso ? 'rimosso' : '') + '"><span class="nome-file">' + esc(a.nome) + '</span><span>' + esc(dataIt(a.creato)) + ' · ' + a.schede + ' schede' + (a.persone ? ' · ' + esc(a.persone.map(p => (p.nome + ' ' + p.cognome).trim()).join(', ')) : '') + '</span>' +
+    '<button class="copia" data-azione="archivio-rimosso" data-i="' + i + '">' + (a.rimosso ? 'Segna come online' : 'Segna come rimosso') + '</button></li>').join('');
+  return '<button class="indietro" data-azione="home">‹ Home</button><div class="vista-testa"><h2><span aria-hidden="true">🔐</span> Backup e sicurezza</h2></div>' +
+    '<section class="pannello"><h3>Protezione</h3><ul class="stato">' +
+      '<li>Archivio cifrato su questo dispositivo con AES-256; la chiave deriva dalla tua password.</li>' +
+      '<li>Blocco automatico dopo ' + MINUTI_BLOCCO + " minuti di inattività o quando l'app passa in background.</li>" +
+      '<li>Ultimo salvataggio: ' + esc(dataIt(d.aggiornato)) + '.</li></ul>' +
+      '<div class="azioni"><button class="pulsante" data-azione="vai" data-vista="cambiaPassword">Cambia password</button><button class="pulsante" data-azione="nuova-chiave">Nuova chiave di recupero</button></div></section>' +
+    '<section class="pannello"><h3>Backup cifrato</h3><p>Un file .filo con tutte le schede, cifrato come l\'archivio. Si apre con la password e la chiave di recupero valide al momento dell\'esportazione. Conservalo lontano da questo dispositivo, ad esempio su una chiavetta o nel cloud.</p>' +
+      '<p><strong>Ultimo backup:</strong> ' + (d.ultimoBackup ? esc(dataIt(d.ultimoBackup)) : 'mai') + '</p>' +
+      '<div class="azioni"><button class="pulsante primario" data-azione="esporta-backup">Esporta backup cifrato</button>' + inputFile('Ripristina da backup') + '</div></section>' +
+    '<section class="pannello"><h3>Condivisione con i familiari</h3><p>Crea una pagina unica e cifrata da pubblicare nel tuo spazio online. I familiari autorizzati la aprono dal link, senza account, con il proprio nome e la password personale che comunichi loro di persona.</p>' +
+      '<div class="azioni"><button class="pulsante primario" data-azione="vai" data-vista="famiglia">Crea archivio per i familiari</button></div>' +
+      (archivi ? '<p style="margin-top:14px">Aggiornamenti generati. Ogni nuovo famiglia.html caricato su GitHub sostituisce il precedente allo stesso link; le versioni vecchie restano però nella cronologia del repository.</p><ul class="archivi">' + archivi + '</ul>' : '') + '</section>' +
+    '<section class="pannello"><h3>🔏 Sigillo per le ultime volontà</h3><p>Le schede sigillate restano chiuse nell\'archivio dei familiari: per aprirle serve un numero minimo di parti della chiave, ciascuna affidata a un custode diverso.</p>' +
+      '<p><strong>Stato:</strong> ' + (d.sigillo ? 'attivo, servono ' + d.sigillo.k + ' parti su ' + d.sigillo.n : 'non ancora creato') + ' · ' + d.schede.filter(s => s.sigillata).length + ' schede sigillate</p>' +
+      '<div class="azioni"><button class="pulsante" data-azione="vai" data-vista="sigillo">' + (d.sigillo ? 'Gestisci il sigillo' : 'Crea il sigillo') + '</button></div></section>' +
+    '<section class="pannello"><h3>Importa, esporta e stampa</h3><p>L\'esportazione in chiaro produce un file leggibile da chiunque: usala solo per trasferire le schede e poi eliminalo.</p>' +
+      '<div class="azioni"><button class="pulsante" data-azione="stampa-tutto">Stampa tutto</button><button class="pulsante" data-azione="esporta-chiaro">Esporta in chiaro</button>' + inputFile('Importa schede') + '</div></section>' +
+    '<section class="pannello delicato"><h3>Zona delicata</h3><p>Cancella l\'archivio da questo dispositivo. I backup esportati non vengono toccati.</p><div class="azioni"><button class="pulsante pericolo" data-azione="elimina-tutto">Elimina tutto da questo dispositivo</button></div></section>';
+}
+function vistaCambiaPassword(){
+  const ob = S.vista.obbligatoria;
+  return (ob ? '' : '<button class="indietro" data-azione="sicurezza">‹ Backup e sicurezza</button>') +
+    '<div class="vista-testa"><h2>' + (ob ? 'Scegli una nuova password' : 'Cambia password') + '</h2></div>' +
+    '<form class="modulo" data-form="cambia-password">' +
+    (ob ? '<p style="margin:0;color:var(--tenue)">Chiave di recupero accettata. Imposta ora una nuova password per i prossimi accessi.</p>' : '<label class="etichetta">Password attuale<input type="password" name="attuale" required autocomplete="current-password" autocapitalize="off" spellcheck="false"></label>') +
+    campiNuovaPassword() + '<p style="margin:0;font-size:.88rem;color:var(--tenue)">I backup già esportati restano protetti dalla password con cui sono stati creati.</p>' +
+    '<div class="azioni"><button type="submit" class="pulsante primario">Salva la nuova password</button></div></form>';
+}
+function vistaMostraChiave(){
+  return '<div class="vista-testa"><h2>La tua chiave di recupero</h2></div><div class="modulo">' +
+    '<p style="margin:0">Serve se dimentichi la password. Scrivila a mano e conservala in un luogo sicuro, separato dalla password. Non verrà più mostrata.</p>' +
+    '<div class="chiave">' + esc(S.vista.chiave) + '</div>' +
+    '<label class="spunta"><input type="checkbox" id="trascritta"> L\'ho trascritta e conservata</label>' +
+    '<div class="azioni"><button class="pulsante primario" data-azione="chiave-ok">Continua</button></div></div>';
+}
+function rigaPersona(p){
+  p = p || {};
+  const a = 'autocomplete="off" autocorrect="off" spellcheck="false"';
+  return '<div class="persona"><div class="persona-nomi">' +
+    '<label class="etichetta">Nome<input data-p="nome" value="' + esc(p.nome || '') + '" ' + a + '></label>' +
+    '<label class="etichetta">Cognome<input data-p="cognome" value="' + esc(p.cognome || '') + '" ' + a + '></label></div>' +
+    '<label class="etichetta">Password personale (almeno 12 caratteri)<input data-p="pw" type="text" class="campo-pw" value="' + esc(p.pw || '') + '" ' + a + ' autocapitalize="off"></label>' +
+    '<div class="riga-strumenti"><button type="button" class="pulsante piccolo" data-azione="genera-pw-persona">Genera password</button>' +
+    '<button type="button" class="collegamento rosso" data-azione="rimuovi-persona">Rimuovi</button></div></div>';
+}
+function vistaFamiglia(){
+  const prec = (S.dati.familiari && S.dati.familiari.length) ? S.dati.familiari
+    : ((S.dati.archiviFamiliari.find(a => a.persone && a.persone.length) || {}).persone || [{}]);
+  const opzioni = SEZIONI.map(sez => {
+    const n = S.dati.schede.filter(s => s.sezione === sez.id).length;
+    return '<label class="spunta"><input type="checkbox" name="sez" value="' + sez.id + '"' + (n ? ' checked' : ' disabled') + '> ' + sez.icona + ' ' + sez.nome + ' <span style="color:var(--tenue)">(' + n + ')</span></label>';
+  }).join('');
+  return '<button class="indietro" data-azione="sicurezza">‹ Backup e sicurezza</button><div class="vista-testa"><h2>Archivio per i familiari</h2></div>' +
+    '<form class="modulo" data-form="famiglia"><p style="margin:0;color:var(--tenue)">Un solo link per tutti. Ogni familiare autorizzato entra con il proprio nome e la password personale che gli comunichi tu. L\'app ricorda nomi e password per i prossimi aggiornamenti, dentro il tuo archivio cifrato.</p>' +
+    '<fieldset style="border:0;padding:0;margin:0;display:grid;gap:10px"><legend class="etichetta" style="margin-bottom:8px">Sezioni da includere</legend>' + opzioni + '</fieldset>' +
+    '<label class="etichetta">Messaggio di apertura (facoltativo, visibile solo dopo lo sblocco)<textarea name="messaggio" placeholder="Qualche parola per chi aprirà l\'archivio"></textarea></label>' +
+    '<div><div class="etichetta" style="margin-bottom:8px">Familiari autorizzati</div><div id="persone" style="display:grid;gap:12px">' + prec.map(rigaPersona).join('') + '</div>' +
+    '<button type="button" class="pulsante piccolo" data-azione="aggiungi-persona" style="margin-top:12px">+ Aggiungi familiare</button></div>' +
+    '<div class="azioni"><button type="submit" class="pulsante primario">Crea e scarica la pagina</button></div></form>';
+}
+function vistaFamigliaFatto(){
+  return '<div class="vista-testa"><h2>Archivio per i familiari pronto</h2></div><div class="modulo">' +
+    '<p style="margin:0">Hai scaricato <strong style="font-family:var(--mono);font-size:.9rem;word-break:break-all">' + esc(S.vista.nome) + '</strong>.</p>' +
+    '<p style="margin:0"><strong>Familiari autorizzati:</strong> ' + esc((S.vista.persone || []).map(p => (p.nome + ' ' + p.cognome).trim()).join(', ')) + '</p>' +
+    (S.vista.sigillate ? '<p style="margin:0">🔏 ' + S.vista.sigillate + (S.vista.sigillate === 1 ? ' scheda sigillata: si apre' : ' schede sigillate: si aprono') + ' solo con ' + S.dati.sigillo.k + ' parti su ' + S.dati.sigillo.n + ' della chiave del sigillo.</p>' : '') +
+    '<ol class="passi"><li>Su GitHub, nel repository dell\'app, tocca «Add file», poi «Upload files», scegli famiglia.html dai Download e conferma con «Commit changes». Il nuovo file sostituisce il precedente.</li><li>Dopo un paio di minuti la pagina aggiornata è online allo stesso link di sempre: non serve rimandarlo.</li><li>Se è la prima volta, o hai aggiunto un familiare, invia il link e comunica la password di persona, mai nello stesso messaggio. Per entrare servono il nome, scritto come l\'hai inserito, e la password; maiuscole e accenti del nome non contano.</li></ol>' +
+    '<div class="azioni"><button class="pulsante primario" data-azione="sicurezza">Torna a Backup e sicurezza</button></div></div>';
+}
+function campiCustodi(n, nomi){
+  let h = '';
+  for (let i = 0; i < n; i++) h += '<label class="etichetta">Custode ' + (i + 1) + '<input data-custode value="' + esc(nomi[i] || '') + '" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Nome e cognome"></label>';
+  return h;
+}
+function opzioniK(n, k){ let h = ''; for (let i = 2; i <= n; i++) h += '<option value="' + i + '"' + (i === k ? ' selected' : '') + '>' + i + '</option>'; return h; }
+function notaSigillo(n, k){
+  return 'Servono ' + k + ' parti su ' + n + '. Nessuno da solo può aprire il sigillo' + (n > k ? '; se ' + (n - k === 1 ? 'un custode perde' : (n - k) + ' custodi perdono') + ' la propria parte, si apre comunque.' : '. Attenzione: se anche un solo custode perde la sua parte, il sigillo non si potrà più aprire.');
+}
+function vistaSigillo(){
+  const sg = S.dati.sigillo, nSig = S.dati.schede.filter(s => s.sigillata).length;
+  const n = sg ? sg.n : 3, k = sg ? sg.k : 2;
+  let nOpz = ''; for (let i = 2; i <= 7; i++) nOpz += '<option value="' + i + '"' + (i === n ? ' selected' : '') + '>' + i + '</option>';
+  return '<button class="indietro" data-azione="sicurezza">‹ Backup e sicurezza</button><div class="vista-testa"><h2><span aria-hidden="true">🔏</span> Sigillo per le ultime volontà</h2></div>' +
+    '<p class="sottotitolo">Le schede che sigilli restano chiuse nell\'archivio dei familiari. La chiave del sigillo viene divisa in parti, una per ogni custode: per aprire servono almeno le parti indicate, quindi nessun custode da solo può leggere le schede sigillate.</p>' +
+    (sg ? '<section class="pannello"><h3>Sigillo attivo</h3><ul class="stato"><li>Servono ' + sg.k + ' parti su ' + sg.n + '.</li><li>Custodi: ' + esc(sg.custodi.join(', ')) + '.</li><li>Creato il ' + esc(dataIt(sg.creato)) + '.</li><li>Schede sigillate: ' + nSig + '.</li></ul>' +
+      '<div class="azioni"><button class="pulsante primario" data-azione="vai" data-vista="sigilloParti">Vedi e stampa le parti</button></div></section>' : '') +
+    '<form class="modulo" data-form="sigillo" style="margin-top:14px"><h3 style="margin:0">' + (sg ? 'Sostituisci il sigillo' : 'Crea il sigillo') + '</h3>' +
+    (sg ? '<p style="margin:0;color:var(--tenue)">Le nuove parti varranno per i prossimi archivi. Gli archivi già pubblicati continueranno ad aprirsi con le parti vecchie.</p>' : '') +
+    '<div class="persona-nomi"><label class="etichetta">Numero di custodi<select name="n">' + nOpz + '</select></label><label class="etichetta">Parti necessarie<select name="k">' + opzioniK(n, k) + '</select></label></div>' +
+    '<p class="suggerimento" data-nota-sigillo>' + notaSigillo(n, k) + '</p>' +
+    '<div id="custodi" style="display:grid;gap:10px">' + campiCustodi(n, sg ? sg.custodi : []) + '</div>' +
+    '<div class="azioni"><button type="submit" class="pulsante primario">' + (sg ? 'Crea un nuovo sigillo' : 'Crea il sigillo e le parti') + '</button></div></form>';
+}
+function vistaSigilloParti(){
+  const sg = S.dati.sigillo;
+  return '<button class="indietro" data-azione="vai" data-vista="sigillo">‹ Sigillo</button><div class="vista-testa"><h2>Parti della chiave del sigillo</h2></div>' +
+    '<p class="sottotitolo">Consegna a ogni custode solo la sua parte, stampata su carta. Spiegagli che dovrà usarla solo dopo la tua morte, insieme ad almeno ' + (sg.k - 1) + (sg.k - 1 === 1 ? ' altro custode' : ' altri custodi') + ', nella voce «Sezione sigillata» dell\'archivio di famiglia.</p>' +
+    sg.parti.map((c, i) => '<section class="pannello"><h3>Parte ' + (i + 1) + ' di ' + sg.n + ' · ' + esc(sg.custodi[i]) + '</h3><div class="chiave codice-parte">' + esc(c) + '</div>' +
+      '<div class="azioni"><button class="pulsante piccolo" data-azione="stampa-parte" data-i="' + i + '">Stampa questa parte</button><button class="pulsante piccolo" data-azione="copia" data-valore="' + esc(c) + '">Copia</button></div></section>').join('') +
+    '<div class="piede"><button class="pulsante primario" data-azione="stampa-parti">Stampa tutte, una per pagina</button><button class="pulsante" data-azione="sicurezza">Fine</button></div>';
+}
+function vistaApriSigillo(){
+  const sg = S.dati.sigillo;
+  let campi = '';
+  for (let i = 0; i < sg.k; i++) campi += '<label class="etichetta">Parte ' + (i + 1) + '<textarea data-parte rows="2" style="min-height:70px;font-family:var(--mono)" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="FILO-XXXX-XXXX-…"></textarea></label>';
+  return '<button class="indietro" data-azione="home">‹ Home</button><div class="vista-testa"><h2>🔏 Apri il sigillo</h2></div>' +
+    '<form class="modulo" data-form="apri-sigillo"><p style="margin:0">Questa parte dell\'archivio è destinata a essere letta dopo la morte di chi l\'ha preparata. Inserite almeno ' + sg.k + ' parti della chiave del sigillo, ciascuna di un custode diverso. I custodi sono: ' + esc(sg.custodi.join(', ')) + '.</p>' +
+    campi + '<p style="margin:0;font-size:.88rem;color:var(--tenue)">Trattini, spazi e maiuscole non contano.</p><div class="azioni"><button type="submit" class="pulsante primario">Apri il sigillo</button></div></form>';
+}
+function stampaParti(indici){
+  const sg = S.dati.sigillo;
+  $('#print-area').innerHTML = indici.map(i => '<div class="p-parte"><h1>Il Filo di Casa</h1><h2>Parte della chiave del sigillo</h2>' +
+    '<p><strong>Custode:</strong> ' + esc(sg.custodi[i]) + '<br><strong>Parte ' + (i + 1) + ' di ' + sg.n + '</strong> · per aprire il sigillo ne servono ' + sg.k + '</p>' +
+    '<p class="p-codice">' + esc(sg.parti[i]) + '</p>' +
+    '<p>Conserva questo foglio in un luogo sicuro e non mostrarlo ad altri. Dopo la mia morte, insieme ad almeno ' + (sg.k - 1) + (sg.k - 1 === 1 ? ' altro custode' : ' altri custodi') + ', apri l\'archivio di famiglia, scegli «Apri il sigillo» e inserisci le parti.</p>' +
+    '<p>Altri custodi: ' + esc(sg.custodi.filter((_, j) => j !== i).join(', ')) + '</p><p style="margin-top:30pt">Stampato il ' + esc(dataIt(ora())) + '</p></div>').join('');
+  setTimeout(() => window.print(), 60);
+}
+function contenuto(){
+  if (S.ricerca.trim()) return vistaRicerca();
+  const v = S.vista, solo = ['modifica','sicurezza','cambiaPassword','mostraChiave','famiglia','famigliaFatto','sigillo','sigilloParti'];
+  if (v.tipo === 'apriSigillo') return proprietario() || !S.dati.sigillo || S.sigilloAperto ? vistaHome() : vistaApriSigillo();
+  if (!proprietario() && solo.includes(v.tipo)) return vistaHome();
+  switch (v.tipo) {
+    case 'sezione': return vistaSezione(v.id);
+    case 'scheda': return vistaScheda(v.id);
+    case 'modifica': return vistaModifica(v.id, v.sezione);
+    case 'sicurezza': return vistaSicurezza();
+    case 'cambiaPassword': return vistaCambiaPassword();
+    case 'mostraChiave': return vistaMostraChiave();
+    case 'famiglia': return vistaFamiglia();
+    case 'famigliaFatto': return vistaFamigliaFatto();
+    case 'sigillo': return vistaSigillo();
+    case 'sigilloParti': return S.dati.sigillo ? vistaSigilloParti() : vistaSigillo();
+    default: return vistaHome();
+  }
+}
+function render(){
+  const app = $('#app');
+  if (!S.key) {
+    app.innerHTML = '<div class="porta-sfondo">' + schermataEsterna() + '</div>';
+    if (matchMedia('(pointer:fine)').matches) { const i = app.querySelector('form input'); if (i) i.focus(); }
+    return;
+  }
+  app.innerHTML = testata() + '<main id="principale">' + contenuto() + '</main>';
+  window.scrollTo(0, 0);
+}
+function renderPrincipale(){ const m = $('#principale'); if (m) m.innerHTML = contenuto(); }
+function vai(vista){ S.vista = vista; S.ricerca = ''; render(); }
+
+/* ---------- Stampa ---------- */
+function htmlStampaScheda(s){
+  const sez = SEZ[s.sezione];
+  const righe = sez.campi.filter(c => s.campi && s.campi[c.k]).map(c => '<tr><td>' + esc(c.l) + '</td><td>' + esc(c.t === 'date' ? dataIt(s.campi[c.k]) : s.campi[c.k]).replace(/\n/g, '<br>') + '</td></tr>').join('');
+  return '<div class="p-scheda"><h3>' + esc(s.titolo) + '</h3>' + (righe ? '<table>' + righe + '</table>' : '') + (s.note ? '<p><em>Note:</em><br>' + esc(s.note).replace(/\n/g, '<br>') + '</p>' : '') + '</div>';
+}
+function stampa(schede, titolo){
+  if (!schede.length) return avviso('Non ci sono schede da stampare.');
+  $('#print-area').innerHTML = '<h1>Il Filo di Casa</h1><p>' + esc(titolo) + ' · stampato il ' + esc(dataIt(ora())) + ' · documento riservato</p>' +
+    SEZIONI.map(sez => { const l = schede.filter(s => s.sezione === sez.id).sort((a, b) => a.titolo.localeCompare(b.titolo, 'it')); return l.length ? '<h2>' + esc(sez.nome) + '</h2>' + l.map(htmlStampaScheda).join('') : ''; }).join('');
+  setTimeout(() => window.print(), 60);
+}
+window.addEventListener('afterprint', () => { $('#print-area').innerHTML = ''; });
+
+/* ---------- File: ripristino e importazione ---------- */
+async function gestisciFile(file){
+  S.dialogoFile = 0;
+  let obj;
+  try { obj = JSON.parse(await file.text()); } catch (e) { return avviso('Il file non è un backup valido del Filo di Casa.'); }
+  if (proprietario() && obj && obj.formato === 'filo-di-casa' && obj.pw && obj.data) {
+    const segreto = await chiediTesto({titolo:'Password del backup', testo:'Inserisci la password (o la chiave di recupero) valida quando il backup è stato esportato.', tipo:'password', ok:'Apri backup'});
+    if (!segreto) return;
+    avviso('Verifica in corso…');
+    let dek = null;
+    try { dek = await svolgi(segreto, obj.pw); } catch (e) { if (obj.rk) { try { dek = await svolgi(normRecupero(segreto), obj.rk); } catch (e2) {} } }
+    if (!dek) return avviso('Password o chiave non corretta per questo backup.');
+    if (leggiVault()) {
+      const ok = await conferma("Le schede presenti su questo dispositivo saranno sostituite da quelle del backup" + (obj.aggiornato ? ' del ' + dataIt(obj.aggiornato) : '') + ". Da ora varranno la password e la chiave di recupero del backup.", {titolo:'Ripristinare il backup?', ok:'Ripristina', pericolo:true});
+      if (!ok) { dek.fill(0); return; }
+    }
+    try {
+      await apri(dek, obj);
+      scriviVault(obj);
+      avviso('Backup ripristinato.');
+    } catch (e) { avviso('Il backup sembra danneggiato.'); }
+    return;
+  }
+  if (obj && obj.formato === 'filo-di-casa-chiaro' && Array.isArray(obj.schede)) {
+    if (!S.key) return avviso('Crea prima il tuo archivio, poi importa le schede da Backup e sicurezza.');
+    const valide = obj.schede.filter(s => s && SEZ[s.sezione] && s.titolo && String(s.titolo).trim());
+    if (!valide.length) return avviso('Nel file non ci sono schede da importare.');
+    if (!await conferma('Aggiungere ' + valide.length + (valide.length === 1 ? ' scheda' : ' schede') + " all'archivio? Le schede esistenti restano invariate.", {titolo:'Importa schede', ok:'Importa'})) return;
+    valide.forEach(s => S.dati.schede.push(pulisciScheda(s)));
+    await salva(); render(); avviso('Schede importate. Ricorda di eliminare il file in chiaro.');
+    return;
+  }
+  avviso('Questo file non è un backup del Filo di Casa.');
+}
+
+/* ---------- Eventi ---------- */
+document.addEventListener('click', async e => {
+  if (e.target.matches && e.target.matches('input[type=file]')) { S.dialogoFile = Date.now(); return; }
+  const t = e.target.closest('[data-azione]'); if (!t) return;
+  const a = t.dataset.azione, id = t.dataset.id;
+  switch (a) {
+    case 'pre': S.pre = t.dataset.pre || null; S.motivo = ''; render(); break;
+    case 'home': vai({tipo:'home'}); break;
+    case 'blocca': blocca(); break;
+    case 'sezione': vai({tipo:'sezione', id}); break;
+    case 'apri': vai({tipo:'scheda', id}); break;
+    case 'nuova': vai({tipo:'modifica', sezione:t.dataset.sezione}); break;
+    case 'modifica': vai({tipo:'modifica', id}); break;
+    case 'sicurezza': vai({tipo:'sicurezza'}); break;
+    case 'vai': vai({tipo:t.dataset.vista}); break;
+    case 'pulisci-ricerca': S.ricerca = ''; render(); break;
+    case 'copia':
+      if (navigator.clipboard) navigator.clipboard.writeText(t.dataset.valore).then(() => avviso('Copiato negli appunti.'), () => avviso('Copia non riuscita.'));
+      break;
+    case 'elimina': {
+      const s = trova(id); if (!s) return;
+      if (!await conferma('La scheda «' + s.titolo + '» sarà eliminata definitivamente.', {titolo:'Eliminare la scheda?', ok:'Elimina', pericolo:true})) return;
+      S.dati.schede = S.dati.schede.filter(x => x.id !== id); await salva(); vai({tipo:'sezione', id:s.sezione}); avviso('Scheda eliminata.');
+      break;
+    }
+    case 'genera-pw': {
+      const f = t.closest('form'), pw = generaPassword();
+      f.pw1.value = pw; f.pw2.value = pw; f.pw1.type = 'text'; f.pw2.type = 'text';
+      const m = f.querySelector('[data-mostra-pw]'); if (m) m.checked = true;
+      f.querySelector('[data-nota-pw]').textContent = 'Password generata: scrivila su carta prima di continuare.';
+      break;
+    }
+    case 'stampa-parte': stampaParti([+t.dataset.i]); break;
+    case 'stampa-parti': stampaParti(S.dati.sigillo.parti.map((_, i) => i)); break;
+    case 'aggiungi-persona': {
+      $('#persone').insertAdjacentHTML('beforeend', rigaPersona());
+      const righe = document.querySelectorAll('#persone .persona'); righe[righe.length - 1].querySelector('[data-p=nome]').focus();
+      break;
+    }
+    case 'rimuovi-persona': {
+      const r = t.closest('.persona');
+      if (document.querySelectorAll('#persone .persona').length === 1) { r.querySelectorAll('input').forEach(i => { i.value = ''; }); return; }
+      r.remove();
+      break;
+    }
+    case 'genera-pw-persona':
+      t.closest('.persona').querySelector('[data-p=pw]').value = generaPassword();
+      avviso('Password generata: annotala per comunicarla a questo familiare.');
+      break;
+    case 'chiave-ok':
+      if (!$('#trascritta').checked) return avviso('Conferma di aver trascritto la chiave di recupero.');
+      vai(S.vista.prima ? {tipo:'home'} : {tipo:'sicurezza'});
+      break;
+    case 'nuova-chiave': {
+      if (!await conferma('La chiave di recupero attuale smetterà di funzionare per questo archivio. Sui backup già esportati resta valida quella precedente.', {titolo:'Generare una nuova chiave?', ok:'Genera'})) return;
+      const rk = generaChiaveRecupero();
+      S.vault.rk = await avvolgi(normRecupero(rk), S.dek); scriviVault(S.vault);
+      vai({tipo:'mostraChiave', chiave:rk});
+      break;
+    }
+    case 'esporta-backup':
+      S.dati.ultimoBackup = ora();
+      if (!await salva()) return;
+      scarica('filo-di-casa-backup-' + oggiFile() + '.filo', JSON.stringify(S.vault), 'application/octet-stream');
+      avviso('Backup cifrato esportato.');
+      if (S.vista.tipo === 'sicurezza' || S.vista.tipo === 'home') renderPrincipale();
+      break;
+    case 'esporta-chiaro':
+      if (!await conferma('Il file conterrà tutte le schede senza cifratura, leggibili da chiunque lo apra. Eliminalo appena non serve più.', {titolo:'Esportare in chiaro?', ok:'Esporta', pericolo:true})) return;
+      scarica('filo-di-casa-in-chiaro-' + oggiFile() + '.json', JSON.stringify({formato:'filo-di-casa-chiaro', esportato:ora(), schede:S.dati.schede}, null, 2), 'application/json');
+      break;
+    case 'stampa-tutto': stampa(S.dati.schede, proprietario() ? 'Archivio completo' : 'Archivio di famiglia'); break;
+    case 'stampa-sezione': stampa(S.dati.schede.filter(s => s.sezione === id), SEZ[id].nome); break;
+    case 'stampa-scheda': { const s = trova(id); if (s) stampa([s], s.titolo); break; }
+    case 'archivio-rimosso': {
+      const ar = S.dati.archiviFamiliari[+t.dataset.i]; if (!ar) return;
+      ar.rimosso = !ar.rimosso; await salva(); renderPrincipale();
+      break;
+    }
+    case 'elimina-tutto': {
+      if (!await conferma("Tutte le schede, la password e la chiave di recupero saranno cancellate da questo dispositivo. L'operazione non si può annullare.", {titolo:'Eliminare tutto?', ok:'Continua', pericolo:true})) return;
+      const scritto = await chiediTesto({titolo:'Ultima conferma', testo:'Scrivi ELIMINA per confermare.', ok:'Elimina tutto'});
+      if (!scritto || scritto.trim().toUpperCase() !== 'ELIMINA') return avviso('Operazione annullata.');
+      cancellaVault(); blocca(); S.pre = null; render(); avviso('Archivio eliminato da questo dispositivo.');
+      break;
+    }
+  }
+});
+document.addEventListener('change', e => {
+  const el = e.target;
+  if (el.matches('input[type=file][data-file]')) { const f = el.files && el.files[0]; el.value = ''; S.dialogoFile = 0; if (f) gestisciFile(f); return; }
+  if ((el.name === 'n' || el.name === 'k') && el.closest('[data-form=sigillo]')) {
+    const f = el.closest('form'), n = +f.n.value, k = Math.min(+f.k.value, n);
+    if (el.name === 'n') {
+      const nomi = [...f.querySelectorAll('[data-custode]')].map(i => i.value);
+      $('#custodi').innerHTML = campiCustodi(n, nomi);
+      f.k.innerHTML = opzioniK(n, k);
+    }
+    f.querySelector('[data-nota-sigillo]').textContent = notaSigillo(n, k);
+    return;
+  }
+  if (el.matches('[data-mostra-pw]')) { const f = el.closest('form'); [f.pw1, f.pw2].forEach(i => { i.type = el.checked ? 'text' : 'password'; }); }
+});
+document.addEventListener('cancel', e => { if (e.target.matches && e.target.matches('input[type=file]')) S.dialogoFile = 0; }, true);
+document.addEventListener('input', e => { if (e.target.id === 'cerca') { S.ricerca = e.target.value; renderPrincipale(); } });
+document.addEventListener('submit', async e => {
+  e.preventDefault();
+  const f = e.target, tipo = f.dataset.form;
+  const err = f.querySelector('.errore'); if (err) err.remove();
+  switch (tipo) {
+    case 'crea': {
+      const pw = leggiNuovaPassword(f); if (!pw) return;
+      await occupato(f, 'Creazione…', () => creaArchivio(pw));
+      break;
+    }
+    case 'sblocca': {
+      const pw = f.pw.value; if (!pw) return;
+      await occupato(f, 'Sblocco…', async () => {
+        const v = leggiVault(); let dek;
+        try { dek = await svolgi(pw, v.pw); } catch (x) { mostraErrore(f, 'Password non corretta.'); f.pw.select(); return; }
+        try { await apri(dek, v); } catch (x) { mostraErrore(f, "L'archivio sembra danneggiato. Prova a ripristinare un backup."); }
+      });
+      break;
+    }
+    case 'recupero': {
+      const k = normRecupero(f.chiave.value);
+      if (k.length !== 24) return mostraErrore(f, 'La chiave di recupero è composta da 24 caratteri.');
+      await occupato(f, 'Verifica…', async () => {
+        const v = leggiVault(); let dek;
+        try { dek = await svolgi(k, v.rk); } catch (x) { return mostraErrore(f, 'Chiave di recupero non corretta.'); }
+        try { await apri(dek, v, {tipo:'cambiaPassword', obbligatoria:true}); } catch (x) { mostraErrore(f, "L'archivio sembra danneggiato. Prova a ripristinare un backup."); }
+      });
+      break;
+    }
+    case 'sblocca-famiglia': {
+      const pw = f.pw.value; if (!pw) return;
+      await occupato(f, 'Apertura…', async () => {
+        try {
+          let dek, nomeAcc = '';
+          if (INCORPORATO.slots) {
+            nomeAcc = String(f.nome.value || '').trim();
+            const segreto = segretoFamiliare(nomeAcc, pw);
+            const esiti = await Promise.allSettled(INCORPORATO.slots.map(sl => svolgi(segreto, sl)));
+            const ok = esiti.find(r => r.status === 'fulfilled');
+            if (!ok) throw new Error('accesso');
+            dek = ok.value;
+          } else dek = await svolgi(pw, INCORPORATO.pw);
+          const key = await chiaveDati(dek);
+          const dati = JSON.parse(dec.decode(await decifra(key, INCORPORATO.data)));
+          S.dek = dek; S.key = key; S.dati = normalizza(dati); S.vista = {tipo:'home'}; S.motivo = ''; S.ultimaAttivita = Date.now();
+          S.utente = nomeAcc ? nomeAcc.charAt(0).toUpperCase() + nomeAcc.slice(1) : '';
+          render();
+        } catch (x) { mostraErrore(f, INCORPORATO.slots ? 'Nome o password non corretti.' : 'Password non corretta.'); f.pw.select(); }
+      });
+      break;
+    }
+    case 'cambia-password': {
+      const ob = S.vista.obbligatoria;
+      const nuova = leggiNuovaPassword(f); if (!nuova) return;
+      await occupato(f, 'Salvataggio…', async () => {
+        if (!ob) { try { (await svolgi(f.attuale.value, S.vault.pw)).fill(0); } catch (x) { return mostraErrore(f, 'La password attuale non è corretta.'); } }
+        S.vault.pw = await avvolgi(nuova, S.dek);
+        if (!scriviVault(S.vault)) return;
+        vai({tipo: ob ? 'home' : 'sicurezza'});
+        avviso('Password aggiornata.');
+      });
+      break;
+    }
+    case 'scheda': {
+      const fd = new FormData(f), id = f.dataset.id, sez = SEZ[f.dataset.sezione];
+      const titolo = String(fd.get('titolo') || '').trim();
+      if (!titolo) return mostraErrore(f, 'Dai un titolo alla scheda.');
+      const campi = {};
+      sez.campi.forEach(c => { const v = String(fd.get('c_' + c.k) || '').trim(); if (v) campi[c.k] = v; });
+      const note = String(fd.get('note') || '').trim(), sigillata = fd.get('sigillata') !== null;
+      let s;
+      if (id) { s = trova(id); if (!s) return; Object.assign(s, {titolo, campi, note, sigillata, aggiornata:ora()}); }
+      else { s = {id:nuovoId(), sezione:sez.id, titolo, campi, note, sigillata, creata:ora(), aggiornata:ora()}; S.dati.schede.push(s); }
+      if (sigillata && !S.dati.sigillo) setTimeout(() => avviso('Ricorda di creare il sigillo in Backup e sicurezza prima di generare l\'archivio per i familiari.'), 4300);
+      await occupato(f, 'Salvataggio…', salva);
+      vai({tipo:'scheda', id:s.id}); avviso('Scheda salvata.');
+      break;
+    }
+    case 'sigillo': {
+      const n = +f.n.value, k = +f.k.value;
+      const custodi = [...f.querySelectorAll('[data-custode]')].map(i => i.value.trim());
+      if (k < 2 || k > n) return mostraErrore(f, 'Il numero di parti necessarie non è valido.');
+      if (custodi.some(c => !c)) return mostraErrore(f, 'Inserisci il nome di ogni custode.');
+      if (S.dati.sigillo && !await conferma('Le parti attuali non varranno per i prossimi archivi. Dovrai consegnare le nuove parti a tutti i custodi.', {titolo:'Sostituire il sigillo?', ok:'Sostituisci'})) return;
+      await occupato(f, 'Creazione…', () => creaSigillo(n, k, custodi));
+      vai({tipo:'sigilloParti'}); avviso('Sigillo creato. Stampa le parti e consegnale ai custodi.');
+      break;
+    }
+    case 'apri-sigillo': {
+      const sg = S.dati.sigillo, testi = [...f.querySelectorAll('[data-parte]')].map(i => i.value);
+      await occupato(f, 'Apertura…', async () => {
+        const parti = [];
+        for (let i = 0; i < testi.length; i++) {
+          const p = await decodificaParte(testi[i]);
+          if (!p) return mostraErrore(f, 'La parte ' + (i + 1) + ' non è corretta: controlla di averla copiata senza errori.');
+          if (p.id !== sg.id) return mostraErrore(f, 'La parte ' + (i + 1) + ' appartiene a un sigillo diverso, forse a un archivio precedente.');
+          if (parti.some(q => q.x === p.x)) return mostraErrore(f, 'La parte ' + (i + 1) + ' è uguale a un\'altra già inserita: servono parti di custodi diversi.');
+          parti.push(p);
+        }
+        try {
+          const chiave = ricomponiSegreto(parti), key = await chiaveDati(chiave);
+          chiave.fill(0);
+          const sch = JSON.parse(dec.decode(await decifra(key, sg.data)));
+          sch.forEach(s => { s.sigillata = true; S.dati.schede.push(s); });
+          S.sigilloAperto = true;
+          vai({tipo:'home'}); avviso('Sigillo aperto.');
+        } catch (x) { mostraErrore(f, 'Non è stato possibile aprire il sigillo con queste parti.'); }
+      });
+      break;
+    }
+    case 'famiglia': {
+      const sezioni = new FormData(f).getAll('sez').map(String);
+      if (!sezioni.length) return mostraErrore(f, 'Scegli almeno una sezione.');
+      const persone = [...f.querySelectorAll('.persona')].map(r => ({
+        nome:r.querySelector('[data-p=nome]').value.trim(),
+        cognome:r.querySelector('[data-p=cognome]').value.trim(),
+        pw:r.querySelector('[data-p=pw]').value
+      })).filter(p => p.nome || p.cognome || p.pw);
+      if (!persone.length) return mostraErrore(f, 'Aggiungi almeno un familiare.');
+      for (const p of persone) {
+        const chi = (p.nome + ' ' + p.cognome).trim() || 'un familiare';
+        if (!p.nome) return mostraErrore(f, 'Manca il nome per ' + chi + '.');
+        if ([...p.pw].length < 12) return mostraErrore(f, 'La password di ' + chi + ' deve avere almeno 12 caratteri.');
+      }
+      const chiavi = persone.map(p => normNome(p.nome) + '\u0000' + p.pw);
+      if (new Set(chiavi).size !== chiavi.length) return mostraErrore(f, 'Due familiari con lo stesso nome hanno anche la stessa password: cambiane una.');
+      await occupato(f, 'Cifratura…', async () => {
+        let uguale = false;
+        for (const p of persone) { try { (await svolgi(p.pw, S.vault.pw)).fill(0); uguale = true; break; } catch (x) {} }
+        if (uguale && !await conferma('Una delle password coincide con quella del tuo archivio personale. Per sicurezza è meglio sceglierne una diversa.', {titolo:'Password uguale', ok:'Usa comunque'})) return;
+        const dek = casuali(32), key = await chiaveDati(dek), t = ora();
+        const incluse = S.dati.schede.filter(s => sezioni.includes(s.sezione));
+        const schede = incluse.filter(s => !s.sigillata), sigillate = incluse.filter(s => s.sigillata);
+        let sigillo = null;
+        if (sigillate.length) {
+          const sg = S.dati.sigillo;
+          if (!sg) { dek.fill(0); return mostraErrore(f, 'Hai schede sigillate: crea prima il sigillo in Backup e sicurezza.'); }
+          const chiaveSig = await chiaveDati(unb64(sg.chiave));
+          sigillo = {id:sg.id, k:sg.k, n:sg.n, custodi:sg.custodi, conteggio:sigillate.length, data:await cifra(chiaveSig, enc.encode(JSON.stringify(sigillate)))};
+        }
+        const contenuto = {versione:2, creato:t, sezioni, messaggio:String(f.messaggio.value || '').trim(), schede, sigillo};
+        const slots = [];
+        for (const p of persone) slots.push(await avvolgi(segretoFamiliare(p.nome, p.pw), dek));
+        for (let i = slots.length - 1; i > 0; i--) { const j = casuali(1)[0] % (i + 1); [slots[i], slots[j]] = [slots[j], slots[i]]; }
+        const arch = {formato:'filo-di-casa-famiglia', versione:2, creato:t, slots, data:await cifra(key, enc.encode(JSON.stringify(contenuto)))};
+        dek.fill(0);
+        const html = SORGENTE.replace(/(<script id="archivio-incorporato" type="application\/json">)[\s\S]*?(<\/script>)/, (m, x, y) => x + JSON.stringify(arch) + y);
+        if (html === SORGENTE) return mostraErrore(f, 'Non è stato possibile generare la pagina.');
+        const nome = 'famiglia.html';
+        scarica(nome, html, 'text/html');
+        const elenco = persone.map(p => ({nome:p.nome, cognome:p.cognome}));
+        S.dati.familiari = persone.map(p => ({nome:p.nome, cognome:p.cognome, pw:p.pw}));
+        S.dati.archiviFamiliari.unshift({nome, creato:t, schede:incluse.length, sigillate:sigillate.length, sezioni, persone:elenco});
+        await salva();
+        vai({tipo:'famigliaFatto', nome, persone:elenco, sigillate:sigillate.length});
+      });
+      break;
+    }
+  }
+});
+
+if (!window.crypto || !crypto.subtle) {
+  $('#app').innerHTML = '<div class="porta-sfondo"><div class="porta"><h1>Il Filo di Casa</h1><p class="errore">Questo browser non offre la cifratura necessaria. Apri la pagina da un indirizzo https con Safari, Chrome, Edge o Firefox aggiornati.</p></div></div>';
+} else {
+  render();
+}
+})();
+</script></body></html>
